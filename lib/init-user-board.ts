@@ -43,6 +43,21 @@ export async function initializeUserBoard(userId: string) {
     });
 
     // create default columns
+    const columns = await Promise.all(
+      DEFAULT_COLUMNS.map((col) =>
+        Column.create({
+          name: col.name,
+          order: col.order,
+          boardId: board._id,
+          jobApplication: [],
+        }),
+      ),
+    );
+
+    board.columns = columns.map((col) => col._id);
+    await board.save();
+
+    return board;
   } catch (error) {
     throw error;
   }
