@@ -5,7 +5,22 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { initializeUserBoard } from "../init-user-board";
 
-const client = new MongoClient(process.env.MONGODB_URI!);
+const MONGODB_URI = process.env.MONGODB_URI!;
+
+declare global {
+  var mongoClient: MongoClient | undefined;
+}
+
+const client =
+  global.mongoClient ??
+  new MongoClient(MONGODB_URI, {
+    maxPoolSize: 10,
+  });
+
+if (!global.mongoClient) {
+  global.mongoClient = client;
+}
+
 const db = client.db();
 
 export const auth = betterAuth({
