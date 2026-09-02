@@ -12,8 +12,11 @@ const Dashboard = async () => {
     userId: session?.user.id,
     name: "Job Hunt",
   }).populate({
-    path:"columns"
-  })
+    path: "columns",
+    populate: {
+      path: "jobApplications",
+    },
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -24,7 +27,7 @@ const Dashboard = async () => {
         </div>
         <KanbanBoard
           board={JSON.parse(JSON.stringify(board))}
-          userId={session?.user.id}
+          userId={session.user.id}
         />
       </div>
     </div>

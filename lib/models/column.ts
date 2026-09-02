@@ -4,7 +4,7 @@ export interface IColumn extends Document {
   name: string;
   boardId: mongoose.Types.ObjectId;
   order: number;
-  jobApplication: mongoose.Types.ObjectId[];
+  jobApplications: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,7 +29,7 @@ const ColumnSchema = new Schema<IColumn>(
       required: true,
       default: 0,
     },
-    jobApplication: [
+    jobApplications: [
       {
         type: Schema.Types.ObjectId,
         ref: "JobApplication",
