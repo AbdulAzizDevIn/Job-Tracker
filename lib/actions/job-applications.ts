@@ -84,11 +84,6 @@ export async function createJobApplication(data: JobApplicationData) {
   return { data: JSON.parse(JSON.stringify(jobApplication)) };
 }
 
-
-
-
-
-
 export async function updateJobApplication(
   id: string,
   updates: {
@@ -224,9 +219,36 @@ export async function updateJobApplication(
   }
 
   const updated = await JobApplication.findByIdAndUpdate(id, updatesToApply, {
-    new: true
+    new: true,
   });
 
- revalidatePath("/dashboard")
-  return {data: JSON.parse(JSON.stringify(updated))}
+  revalidatePath("/dashboard");
+  return { data: JSON.parse(JSON.stringify(updated)) };
+}
+
+export async function deleteJobApplication(id: string) {
+  const session = await getSession();
+  if (!session?.user) {
+    return { error: "Unauthorized" };
+  }
+
+  const jobApplication = await JobApplication.findById(id);
+
+  if (!jobApplication) {
+    return { error: "Job application not found" };
+  }
+
+  if (jobApplication.userId !== session.user.id) {
+    return { error: "Unauthorized" };
+  }
+
+  await Column.findByIdAndUpdate(jobApplication.columnId, {
+    $pull: { jobApplications: id },
+  });
+
+  await jobApplication.deleteOne({ _id: id });
+
+  revalidatePath("/dashboard")
+
+  return { success: true };
 }

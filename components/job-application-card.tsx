@@ -16,15 +16,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { updateJobApplication } from "@/lib/actions/job-applications";
+import { deleteJobApplication, updateJobApplication } from "@/lib/actions/job-applications";
 import React, { useState } from "react";
-import { boolean } from "better-auth";
 
 interface JobApplicationCardProps {
   job: JobApplication;
@@ -63,6 +61,14 @@ export default function JobApplicationCard({
       }
     } catch (error) {
       console.error("Failed to Update job application", error);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      const result = await deleteJobApplication(job._id);
+    } catch (error) {
+      console.error("Failed to delete job application", error);
     }
   }
 
@@ -140,7 +146,7 @@ export default function JobApplicationCard({
                     </>
                   )}
 
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive" onClick={()=> handleDelete()}>
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
@@ -150,6 +156,9 @@ export default function JobApplicationCard({
           </div>
         </CardContent>
       </Card>
+
+
+{/* this is for edit job */}
 
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent className="max-w-2xl">

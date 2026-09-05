@@ -131,8 +131,8 @@ const KanbanBoard = ({ board, userId }: KanbanBoardProps) => {
 
   return (
     <>
-      <div>
-        <div>
+      <div className="space-y-4">
+        <div className="flex gap-4 overflow-x-auto pb-4">
           {columns.map((col, key) => {
             const config = COLUMN_CONFIG[key] || {
               color: "bg-gray-500",
