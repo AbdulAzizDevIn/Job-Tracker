@@ -2,7 +2,14 @@
 
 import { Column, JobApplication } from "@/lib/models/models.types";
 import { Card, CardContent } from "./ui/card";
-import { Edit2, ExternalLink, MoreVertical, Trash2, Plus } from "lucide-react";
+import {
+  Edit2,
+  ExternalLink,
+  MoreVertical,
+  Trash2,
+  MapPin,
+  IndianRupee,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +28,10 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { deleteJobApplication, updateJobApplication } from "@/lib/actions/job-applications";
+import {
+  deleteJobApplication,
+  updateJobApplication,
+} from "@/lib/actions/job-applications";
 import React, { useState } from "react";
 
 interface JobApplicationCardProps {
@@ -38,6 +48,7 @@ export default function JobApplicationCard({
     company: job.company,
     position: job.position,
     location: job.location || "",
+    status: job.status || "",
     notes: job.notes || "",
     salary: job.salary || "",
     jobUrl: job.jobUrl || "",
@@ -46,7 +57,7 @@ export default function JobApplicationCard({
     columnId: job.columnId || "",
   });
 
-  async function handleUpdate(e:React.FormEvent) {
+  async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
     try {
       const result = await updateJobApplication(job._id, {
@@ -56,7 +67,7 @@ export default function JobApplicationCard({
           .map((tag) => tag.trim())
           .filter((tag) => tag.length > 0),
       });
-      if(!result.error){
+      if (!result.error) {
         setIsEditing(false);
       }
     } catch (error) {
@@ -81,27 +92,41 @@ export default function JobApplicationCard({
       console.error("Failed to move job application", error);
     }
   }
+
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   return (
     <>
-      <Card className="cursor-pointer transition-shadow hover:shadow-lg bg-white group shadow-sm">
+      <Card
+        onClick={() => setIsDetailsOpen(true)}
+        className="cursor-pointer transition-shadow hover:shadow-lg bg-white group shadow-sm"
+      >
         <CardContent className="p-4">
           <div className="flex justify-between items-start gap-2">
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-sm mb-1">{job.position}</h3>
-              <p className="text-xs text-muted-foreground mb-2">
-                {job.company}
-              </p>
-              {job.description && (
-                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                  {job.description}
-                </p>
-              )}
+              <p className="text-muted-foreground mb-2">{job.company}</p>
+              <div className="flex items-center justify-between">
+                {job.location && (
+                  <div className=" flex items-center gap-1 text-xs mb-2 ">
+                    <MapPin className="h-4 w-4" /> <span>{job.location}</span>
+                  </div>
+                )}
+                {job.salary && (
+                  <div className=" flex items-center mb-2 font-medium text-xs text-muted-foreground">
+                    <IndianRupee className="h-3.5 w-3.5" />
+                    <span>
+                      {job.salary} {""}LPA
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {job.tags && job.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-1">
+                <div className="flex flex-wrap gap-1 mb-1 mt-1">
                   {job.tags.map((tag, key) => (
                     <span
                       key={key}
-                      className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 dark:text-blue-300"
+                      className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 dark:text-blue-300 "
                     >
                       {tag}
                     </span>
@@ -113,9 +138,9 @@ export default function JobApplicationCard({
                   target="_blank"
                   href={job.jobUrl}
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+                  className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
                 >
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-4 w-4 " />
                 </a>
               )}
             </div>
@@ -126,8 +151,15 @@ export default function JobApplicationCard({
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                <DropdownMenuContent
+                  align="end"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      setIsEditing(true);
+                    }}
+                  >
                     <Edit2 className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
@@ -146,7 +178,10 @@ export default function JobApplicationCard({
                     </>
                   )}
 
-                  <DropdownMenuItem className="text-destructive" onClick={()=> handleDelete()}>
+                  <DropdownMenuItem
+                    className="text-destructive"
+                    onClick={() => handleDelete()}
+                  >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
@@ -157,8 +192,7 @@ export default function JobApplicationCard({
         </CardContent>
       </Card>
 
-
-{/* this is for edit job */}
+      {/* this is for edit job */}
 
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent className="max-w-2xl">
@@ -273,9 +307,57 @@ export default function JobApplicationCard({
               >
                 Cancel
               </Button>
-              <Button type="submit" >Save Changes</Button>
+              <Button type="submit">Save Changes</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* this is for view job */}
+
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{job.position}</DialogTitle>
+            <DialogDescription>{job.company}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p>
+                <strong>Status:</strong> {job.status.toUpperCase()}
+              </p>
+              <p>
+                <strong>Location:</strong> {job.location || "N/A"}
+              </p>
+              <p>
+                <strong>Salary:</strong> {job.salary || "N/A"} LPA
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Skills</h3>
+              <p>{job.tags && (
+                job.tags.map((tag,key)=>(
+                  <p key={key}>{tag}</p>
+                ))
+              )}</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Description</h3>
+              <p>{job.description || "No description added"}</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Notes</h3>
+              <p>{job.notes || "No notes added"}</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Applied Date</h3>
+              <p>{new Date(job.createdAt).toLocaleDateString("en-GB")}</p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>

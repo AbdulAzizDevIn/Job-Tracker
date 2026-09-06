@@ -6,6 +6,8 @@ import {
   Calendar,
   Mic,
   MoreVertical,
+  SendHorizonal,
+  Star,
   Trash2,
   XCircle,
 } from "lucide-react";
@@ -35,20 +37,24 @@ interface ColConfig {
 const COLUMN_CONFIG: Array<ColConfig> = [
   {
     color: "bg-cyan-500",
-    icon: <Calendar className="h-4 w-4" />,
+    icon: <Star className="h-4 w-4" />,
   },
   {
-    color: "bg-green-500",
-    icon: <Mic className="h-4 w-4" />,
+    color: "bg-blue-500",
+    icon: <SendHorizonal className="h-4 w-4" />,
   },
   {
     color: "bg-yellow-500",
+    icon: <Mic className="h-4 w-4" />,
+  },
+  {
+    color: "bg-green-500",
     icon: <Award className="h-4 w-4" />,
   },
   {
-    color: "bg-red-500",
-    icon: <XCircle className="h-4 w-4" />,
-  },
+    color:"bg-gray-500",
+    icon:<XCircle className="h-4 w-4"/>
+  }
 ];
 
 function DroppableColumn({
