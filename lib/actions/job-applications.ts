@@ -57,8 +57,6 @@ export async function createJobApplication(data: JobApplicationData) {
     .select("order")
     .lean()) as { order: number } | null;
 
-  console.log(maxOrder);
-
   const jobApplication = await JobApplication.create({
     company: data.company,
     position: data.position,
@@ -108,6 +106,8 @@ export async function updateJobApplication(
   if (!session?.user) {
     return { error: "Unauthorized" };
   }
+
+  await connectDB();
 
   const jobApplication = await JobApplication.findById(id);
 
@@ -249,6 +249,8 @@ export async function deleteJobApplication(id: string) {
   if (!session?.user) {
     return { error: "Unauthorized" };
   }
+
+  await connectDB();
 
   const jobApplication = await JobApplication.findById(id);
 

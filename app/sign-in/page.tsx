@@ -21,14 +21,14 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setIsLoading(true);
     try {
       const result = await signIn.email({
         email,
@@ -42,7 +42,7 @@ const SignIn = () => {
     } catch (error) {
       setError("An unexpected error occurred");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
   return (
@@ -97,9 +97,9 @@ const SignIn = () => {
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary/90"
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? "Signing in...":"Sign in"}
+              {isLoading ? "Signing in...":"Sign in"}
             </Button>
             <p className="text-center text-sm text-gray-600">
               Don&apos;t have an account?{" "}

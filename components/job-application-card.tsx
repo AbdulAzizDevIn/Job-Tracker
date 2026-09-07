@@ -9,6 +9,7 @@ import {
   Trash2,
   MapPin,
   IndianRupee,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -54,6 +55,7 @@ export default function JobApplicationCard({
   columns,
 }: JobApplicationCardProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     company: job.company,
     position: job.position,
@@ -69,7 +71,10 @@ export default function JobApplicationCard({
 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
+    if (isLoading) return;
+
     try {
+      setIsLoading(true);
       const result = await updateJobApplication(job._id, {
         ...formData,
         tags: formData.tags
@@ -82,24 +87,36 @@ export default function JobApplicationCard({
       }
     } catch (error) {
       console.error("Failed to Update job application", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function handleDelete() {
+    if (isLoading) return;
     try {
-      const result = await deleteJobApplication(job._id);
+      setIsLoading(true);
+
+      await deleteJobApplication(job._id);
     } catch (error) {
       console.error("Failed to delete job application", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function handleMove(newColumnId: string) {
+    if (isLoading) return;
     try {
-      const result = await updateJobApplication(job._id, {
+      setIsLoading(true);
+
+      await updateJobApplication(job._id, {
         columnId: newColumnId,
       });
     } catch (error) {
       console.error("Failed to move job application", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -181,6 +198,7 @@ export default function JobApplicationCard({
                         .map((column, key) => (
                           <DropdownMenuItem
                             key={key}
+                            disabled={isLoading}
                             onClick={() => handleMove(column._id)}
                           >
                             Move to {column.name}
@@ -220,9 +238,17 @@ export default function JobApplicationCard({
                 handleDelete();
                 setIsDetailsOpen(false);
               }}
+              disabled={isLoading}
               className="bg-destructive"
             >
-              YES
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "YES"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -340,10 +366,20 @@ export default function JobApplicationCard({
                 type="button"
                 variant="outline"
                 onClick={() => setIsEditing(false)}
+                disabled={isLoading}
               >
                 Cancel
               </Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -442,7 +478,6 @@ export default function JobApplicationCard({
             </div>
 
             <div className="flex items-center justify-between">
-              {/* Job Link */}
               {job.jobUrl && (
                 <div>
                   <a

@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -38,14 +38,14 @@ const CreateJobApplicationDialog = ({
   boardId,
 }: CreateJobApplicationDialogProps) => {
   const [open, setOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
+    if (isLoading) return;
     try {
+      setIsLoading(true);
       const result = await createJobApplication({
         ...formData,
         columnId,
@@ -58,12 +58,14 @@ const CreateJobApplicationDialog = ({
 
       if (!result.error) {
         setFormData(INITIAL_FORM_DATA);
-        setOpen(false)
+        setOpen(false);
       } else {
         console.error("Failed to create job: ", result.error);
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -190,7 +192,16 @@ const CreateJobApplicationDialog = ({
             >
               Cancel
             </Button>
-            <Button type="submit">Add Application</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding
+                </>
+              ) : (
+                "Add Application"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
