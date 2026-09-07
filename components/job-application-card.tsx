@@ -24,6 +24,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -94,6 +104,7 @@ export default function JobApplicationCard({
   }
 
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   return (
     <>
       <Card
@@ -180,7 +191,7 @@ export default function JobApplicationCard({
 
                   <DropdownMenuItem
                     className="text-destructive"
-                    onClick={() => handleDelete()}
+                    onClick={() => setIsDeleteOpen(true)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete
@@ -191,6 +202,31 @@ export default function JobApplicationCard({
           </div>
         </CardContent>
       </Card>
+
+      {/*this part for popup delete button*/}
+
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this job?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>NO</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                handleDelete()
+                setIsDetailsOpen(false)
+              }}
+              className="bg-destructive"
+            >
+              YES
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* this is for edit job */}
 
@@ -316,46 +352,128 @@ export default function JobApplicationCard({
       {/* this is for view job */}
 
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{job.position}</DialogTitle>
-            <DialogDescription>{job.company}</DialogDescription>
+        <DialogContent className="w-[calc(100vw-2rem)] !max-w-none sm:w-[90vw] sm:!max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-xl font-semibold">
+              {job.position}
+            </DialogTitle>
+
+            <DialogDescription className="text-base">
+              {job.company}
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <p>
-                <strong>Status:</strong> {job.status.toUpperCase()}
-              </p>
-              <p>
-                <strong>Location:</strong> {job.location || "N/A"}
-              </p>
-              <p>
-                <strong>Salary:</strong> {job.salary || "N/A"} LPA
-              </p>
+
+          <div className="space-y-6">
+            <div className="rounded-lg border bg-muted/30 p-4">
+              <h3 className="mb-4 text-sm font-semibold">Job Information</h3>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-xs text-muted-foreground">Status</p>
+                  <span className="mt-1 inline-flex rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-700">
+                    {job.status}
+                  </span>
+                </div>
+
+                <div>
+                  <p className="text-xs text-muted-foreground">Location</p>
+                  <p className="mt-1 text-sm font-medium">
+                    {job.location || "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-muted-foreground">Salary</p>
+                  <p className="mt-1 text-sm font-medium">
+                    {job.salary ? `${job.salary} LPA` : "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-muted-foreground">Applied Date</p>
+                  <p className="mt-1 text-sm font-medium">
+                    {new Date(job.createdAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div>
-              <h3 className="font-semibold">Skills</h3>
-              <p>{job.tags && (
-                job.tags.map((tag,key)=>(
-                  <p key={key}>{tag}</p>
-                ))
-              )}</p>
+              <h3 className="mb-3 text-sm font-semibold">Skills</h3>
+
+              {job.tags && job.tags.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {job.tags.map((tag, key) => (
+                    <span
+                      key={key}
+                      className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No skills added</p>
+              )}
             </div>
 
             <div>
-              <h3 className="font-semibold">Description</h3>
-              <p>{job.description || "No description added"}</p>
+              <h3 className="mb-2 text-sm font-semibold">Description</h3>
+
+              <div className="rounded-lg border bg-muted/20 p-4">
+                <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
+                  {job.description || "No description added"}
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold">Notes</h3>
-              <p>{job.notes || "No notes added"}</p>
-            </div>
 
             <div>
-              <h3 className="font-semibold">Applied Date</h3>
-              <p>{new Date(job.createdAt).toLocaleDateString("en-GB")}</p>
+              <h3 className="mb-2 text-sm font-semibold">Notes</h3>
+
+              <div className="rounded-lg border bg-muted/20 p-4">
+                <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
+                  {job.notes || "No notes added"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              {/* Job Link */}
+              {job.jobUrl && (
+                <div>
+                  <a
+                    href={job.jobUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-muted"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Open Job Posting
+                  </a>
+                </div>
+              )}
+
+              <div className=" flex gap-2">
+                <Button
+                  onClick={() => {
+                    setIsDetailsOpen(false);
+                    setIsEditing(true);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>

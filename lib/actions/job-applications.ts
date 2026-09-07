@@ -84,6 +84,10 @@ export async function createJobApplication(data: JobApplicationData) {
   return { data: JSON.parse(JSON.stringify(jobApplication)) };
 }
 
+{
+  /* update  job action*/
+}
+
 export async function updateJobApplication(
   id: string,
   updates: {
@@ -97,6 +101,7 @@ export async function updateJobApplication(
     description?: string;
     columnId?: string;
     order?: number;
+    status?: string;
   },
 ) {
   const session = await getSession();
@@ -127,6 +132,7 @@ export async function updateJobApplication(
     description: string;
     columnId: string;
     order: number;
+    status: string;
   }> = otherUpdates;
 
   const currentColumnId = jobApplication.columnId.toString();
@@ -136,10 +142,18 @@ export async function updateJobApplication(
     newColumnId && newColumnId !== currentColumnId;
 
   if (isMovingToDifferentColumn) {
+    const newColumn = await Column.findById(newColumnId);
+
+    if (!newColumn) {
+      return { error: "Column not found" };
+    }
+
+    updatesToApply.columnId = newColumnId;
+    updatesToApply.status = newColumn.name.toLowerCase();
+    
     await Column.findByIdAndUpdate(currentColumnId, {
       $pull: { jobApplications: id },
     });
-
     const jobsInTargetColumn = await JobApplication.find({
       columnId: newColumnId,
       _id: { $ne: id },
@@ -226,6 +240,10 @@ export async function updateJobApplication(
   return { data: JSON.parse(JSON.stringify(updated)) };
 }
 
+{
+  /* delete job action*/
+}
+
 export async function deleteJobApplication(id: string) {
   const session = await getSession();
   if (!session?.user) {
@@ -248,7 +266,7 @@ export async function deleteJobApplication(id: string) {
 
   await jobApplication.deleteOne({ _id: id });
 
-  revalidatePath("/dashboard")
+  revalidatePath("/dashboard");
 
   return { success: true };
 }
