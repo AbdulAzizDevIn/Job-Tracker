@@ -217,8 +217,8 @@ export default function JobApplicationCard({
             <AlertDialogCancel>NO</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                handleDelete()
-                setIsDetailsOpen(false)
+                handleDelete();
+                setIsDetailsOpen(false);
               }}
               className="bg-destructive"
             >
@@ -430,7 +430,6 @@ export default function JobApplicationCard({
                 </p>
               </div>
             </div>
-
 
             <div>
               <h3 className="mb-2 text-sm font-semibold">Notes</h3>
