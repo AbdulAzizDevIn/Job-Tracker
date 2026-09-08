@@ -190,7 +190,7 @@ export default function JobApplicationCard({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <DropdownMenuItem
-                    onClick={(e) => {
+                    onClick={() => {
                       setIsEditing(true);
                     }}
                     disabled={isLoading}
@@ -396,7 +396,7 @@ export default function JobApplicationCard({
       {/* this is for view job */}
 
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="w-[calc(100vw-2rem)] !max-w-none sm:w-[90vw] sm:!max-w-3xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-none! sm:w-[90vw] sm:max-w-3xl! max-h-[85vh] overflow-y-auto">
           <DialogHeader className="space-y-1">
             <DialogTitle className="text-xl font-semibold">
               {job.position}

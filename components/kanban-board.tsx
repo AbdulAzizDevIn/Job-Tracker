@@ -71,7 +71,7 @@ function DroppableColumn({
   const sortedJobs =
     column.jobApplications?.sort((a, b) => a.order - b.order) || [];
   return (
-    <Card className="w-[350px] min-w-[350px] flex-shrink-0 shadow-md p-0">
+    <Card className="w-87.5 min-w-87.5 shrink-0 shadow-md p-0">
       <CardHeader
         className={`${config.color} text-white rounded-t-lg pb-3 pt-3`}
       >
@@ -102,7 +102,7 @@ function DroppableColumn({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-[400px] rounded-b-lg">
+      <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
         {sortedJobs.map((job, key) => (
           <SortableJobCard
             key={key}
@@ -142,7 +142,7 @@ const KanbanBoard = ({ board, userId }: KanbanBoardProps) => {
           {columns.map((col, key) => {
             const config = COLUMN_CONFIG[key] || {
               color: "bg-gray-500",
-              icon: <Calendar className="h-4 w-4" />,npm 
+              icon: <Calendar className="h-4 w-4" />
             };
             return (
               <DroppableColumn
