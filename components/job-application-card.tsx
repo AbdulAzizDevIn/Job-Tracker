@@ -502,6 +502,7 @@ export default function JobApplicationCard({
 
               <div className=" flex gap-2">
                 <Button
+                  disabled={isLoading}
                   onClick={() => {
                     setIsDetailsOpen(false);
                     setIsEditing(true);
@@ -510,6 +511,7 @@ export default function JobApplicationCard({
                   Edit
                 </Button>
                 <Button
+                  disabled={isLoading}
                   variant="destructive"
                   onClick={() => setIsDeleteOpen(true)}
                 >

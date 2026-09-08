@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Job Tracker
 
-## Getting Started
+A full-stack job application tracking platform built with Next.js, TypeScript, MongoDB, Mongoose, and Better Auth.
 
-First, run the development server:
+Job Tracker helps users organize their job search through a Kanban-style workflow, track application details, and monitor their progress from a single dashboard.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Live Demo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+https://job-tracker-aziz.vercel.app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 🔐 User authentication with Better Auth
+- 👤 User-specific job data and authorization
+- 📋 Kanban-style job application management
+- ➕ Create job applications
+- ✏️ Edit job applications
+- 🗑️ Delete job applications
+- 🔄 Move applications between hiring stages
+- 📊 Dashboard statistics
+- 🏷️ Job tags and technology tracking
+- 💰 Salary tracking
+- 📍 Location tracking
+- 🔗 Job posting links
+- 📝 Job descriptions and personal notes
+- 📅 Application date tracking
+- 📱 Responsive design for desktop and mobile
+- ⏳ Loading states and disabled actions to prevent duplicate requests
+- 🚀 Production deployment with Vercel
 
-## Learn More
+## Hiring Workflow
 
-To learn more about Next.js, take a look at the following resources:
+Applications can be organized through different stages:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+Wishlist
+    ↓
+Applied
+    ↓
+Interviewing
+    ↓
+Offer
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+          ↘ Rejected
