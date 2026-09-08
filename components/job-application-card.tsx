@@ -151,16 +151,22 @@ export default function JobApplicationCard({
 
               {job.tags && job.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-1 mt-1">
-                  {job.tags.map((tag, key) => (
+                  {job.tags.slice(0, 3).map((tag, key) => (
                     <span
                       key={key}
-                      className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 dark:text-blue-300 "
+                      className="shrink-0 max-w-22.5 truncate px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 dark:text-blue-300 "
                     >
                       {tag}
                     </span>
                   ))}
+                  {job.tags.length > 3 && (
+                    <span className="shrink-0 px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 ">
+                      +{job.tags?.length - 3}
+                    </span>
+                  )}
                 </div>
               )}
+
               {job.jobUrl && (
                 <a
                   target="_blank"
@@ -187,6 +193,7 @@ export default function JobApplicationCard({
                     onClick={(e) => {
                       setIsEditing(true);
                     }}
+                    disabled={isLoading}
                   >
                     <Edit2 className="mr-2 h-4 w-4" />
                     Edit
@@ -210,6 +217,7 @@ export default function JobApplicationCard({
                   <DropdownMenuItem
                     className="text-destructive"
                     onClick={() => setIsDeleteOpen(true)}
+                    disabled={isLoading}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete

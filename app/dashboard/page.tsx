@@ -1,3 +1,4 @@
+import DashboardStats from "@/components/dashboard-stats";
 import KanbanBoard from "@/components/kanban-board";
 import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db";
@@ -33,14 +34,18 @@ async function DashboardPage() {
   if (!session?.user) {
     redirect("/sign-in");
   }
-  
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-black">{board.name}</h1>
-          <p className="text-gray-600">Track your job applications</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-black">{board.name}</h1>
+            <p className="text-gray-600">Track your job applications</p>
+          </div>
+          <DashboardStats board={board} />
         </div>
+
         <KanbanBoard board={board} userId={session.user.id} />
       </div>
     </div>
